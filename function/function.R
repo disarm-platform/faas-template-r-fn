@@ -1,4 +1,4 @@
-run_function = function(params) {
+function(params) {
   # run function and catch result
   result = tryCatch({
     params$number + 1

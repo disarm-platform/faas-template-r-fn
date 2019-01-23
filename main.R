@@ -1,19 +1,15 @@
 library(jsonlite)
 
-source('function.R')
+run_function = dget('function/function.R')
+check_params = dget('function/check_params.R')
 
 main = function () {
-  # reads STDIN, return error if any problems
-  stdin = get_stdin()
-  
-  # parses STDIN as JSON, return error if any problems
-  params = get_params(stdin)
+  # reads STDIN as JSON, return error if any problems
+  params = get_params()
   
   # checks for existence of required parameters, return error if any problems
-  check_params_exist(params)
-  
   # checks types/structure of all parameters, return error if any problems
-  check_params_structure(params)
+  check_params(params)
   
   # if any parameters refer to remote files, try to download and replace parameter with local/temp file reference, return error if any problems
   retrieve_remote_files(params)
@@ -22,36 +18,12 @@ main = function () {
   run_function(params)
 }
 
-get_stdin = function() {
+get_params = function() {
   tryCatch({
-    readLines(file("stdin"))
+    fromJSON(readLines(file("stdin")))
   }, error = function(e) {
     handle_error(e, message = 'Problem getting STDIN')
   })
-}
-
-get_params = function(stdin) {
-  tryCatch({
-    fromJSON(stdin)
-  }, error = function(e) {
-    handle_error(e, message = 'Problem parsing parameters')
-  })
-}
-
-check_params_exist = function(params) {
-  # Individual check for each parameter
-  if (is.null(params$number)) {
-    handle_error(NULL, message = 'Missing `number` parameter')
-  }
-}
-
-check_params_structure = function(params) {
-  if (!is.numeric(params$number)) {
-    handle_error(NULL, message = 'Parameter `number` is not numeric')
-  }
-  if (length(params$number) != 1) {
-    handle_error(NULL, message = 'Only pass a single value for `number')
-  }
 }
 
 retrieve_remote_files = function(params) {
