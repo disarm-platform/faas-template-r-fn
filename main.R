@@ -24,8 +24,7 @@ main = function () {
 
 get_stdin = function() {
   tryCatch({
-    # readLines(file("stdin"))
-    '{"numbe}'
+    readLines(file("stdin"))
   }, error = function(e) {
     handle_error(e, message = 'Problem getting STDIN')
   })
