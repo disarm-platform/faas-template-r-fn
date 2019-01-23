@@ -1,0 +1,8 @@
+provider:
+  name: faas
+  gateway: http://srv.locational.io:8080
+functions:
+  faas-template-r-fn:
+    lang: dockerfile
+    handler: ./faas-template-r-fn
+    image: locational/faas-template-r-fn:latest

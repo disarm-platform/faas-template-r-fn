@@ -1,0 +1,2 @@
+{"type":"success","message":"","content":{"result":2147483649}}
+{"type":"error","message":"Problem running function","content":["Error in handle_success(response): \n"]}
