@@ -1,53 +1,47 @@
 library(jsonlite)
 
-the_tests = dget('function/params_tests.R')
-the_function = dget('function/function.R')
+check_params = dget('function/params_tests.R')
+run_function = dget('function/function.R')
 
 main = function () {
-  # reads STDIN as JSON, return error if any problems
-  params = get_params()
-  
-  # checks for existence of required parameters, return error if any problems
-  # checks types/structure of all parameters, return error if any problems
-  problem = the_tests(params)
-  if (length(problem) > 0) return(handle_error(problem))
-
-  # if any parameters refer to remote files, try to download and replace parameter with local/temp file reference, return error if any problems
-  retrieve_remote_files(params)
-  
-  # run the function with parameters, return error if any problems, return success if succeeds      
-  return(run_function(params))
-}
-
-get_params = function() {
   tryCatch({
-    fromJSON(readLines(file("stdin")))
-  }, error = function(e) {
-    handle_error(e, message = 'Problem parsing STDIN as JSON')
-  })
-}
+    # reads STDIN as JSON, return error if any problems
+    params = fromJSON(readLines(file("stdin")))
+    
+    # checks for existence of required parameters, return error if any problems
+    # checks types/structure of all parameters, return error if any problems
+    check_params(params)
 
-run_function = function(params) {
-  the_function(params)
+    # if any parameters refer to remote files, try to download and 
+    # replace parameter with local/temp file reference, return error if any problems
+    retrieve_remote_files(params)
+    
+    # run the function with parameters, 
+    # return error if any problems, return success if succeeds      
+    function_response = run_function(params)
+    return(handle_success(function_response))
+  }, error = function(e) {
+    return(handle_error(e))
+  })
 }
 
 retrieve_remote_files = function(params) {
   # check if any params are strings that start with 'http' (any case)
   # tryCatch retrieve that file, 
-  #   handle_error if problems, 
+  #   stop() if problems, 
   #   otherwise, write to temp disk, replace parameter with temp filename
 }
 
-handle_error = function(error, message = '') {
+handle_error = function(error) {
   type = 'error'
-  response = toJSON(list(type = unbox(type), message = unbox(message), content = as.character(error)))
-  return(write(response, stdout()))
+  function_response = toJSON(list(type = unbox(type), content = unbox(as.character(error))))
+  return(write(function_response, stdout()))
 }
 
-handle_success = function(content, message = '') {
+handle_success = function(content) {
   type = 'success'
-  response = toJSON(list(type = unbox(type), message = unbox(message), content = content))
-  return(write(response, stdout()))
+  function_response = toJSON(list(type = unbox(type), content = content))
+  return(write(function_response, stdout()))
 }
 
 main()
