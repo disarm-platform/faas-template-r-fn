@@ -26,6 +26,7 @@ main = function () {
 }
 
 retrieve_remote_files = function(params) {
+  # TODO: Write when we have a specific need
   # check if any params are strings that start with 'http' (any case)
   # tryCatch retrieve that file, 
   #   stop() if problems, 
