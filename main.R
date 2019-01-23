@@ -1,7 +1,7 @@
 library(jsonlite)
 
-run_function = dget('function/function.R')
 check_params = dget('function/check_params.R')
+run_function = dget('function/function.R')
 
 main = function () {
   # reads STDIN as JSON, return error if any problems
@@ -10,7 +10,7 @@ main = function () {
   # checks for existence of required parameters, return error if any problems
   # checks types/structure of all parameters, return error if any problems
   check_params(params)
-  
+
   # if any parameters refer to remote files, try to download and replace parameter with local/temp file reference, return error if any problems
   retrieve_remote_files(params)
   
@@ -22,7 +22,7 @@ get_params = function() {
   tryCatch({
     fromJSON(readLines(file("stdin")))
   }, error = function(e) {
-    handle_error(e, message = 'Problem getting STDIN')
+    handle_error(e, message = 'Problem parsing STDIN as JSON')
   })
 }
 
@@ -40,9 +40,9 @@ handle_error = function(error, message = '') {
   stop()
 }
 
-handle_success = function(content) {
+handle_success = function(content, message = '') {
   type = 'success'
-  response = toJSON(list(type = unbox(type), content = content))
+  response = toJSON(list(type = unbox(type), message = unbox(message), content = content))
   write(response, stdout())
   stop()
 }
