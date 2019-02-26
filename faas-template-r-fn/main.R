@@ -35,13 +35,13 @@ retrieve_remote_files = function(params) {
 
 handle_error = function(error) {
   type = 'error'
-  function_response = toJSON(list(type = unbox(type), content = unbox(as.character(error))))
+  function_response = toJSON(list(type = unbox(type), result = unbox(as.character(error))))
   return(write(function_response, stdout()))
 }
 
-handle_success = function(content) {
+handle_success = function(result) {
   type = 'success'
-  function_response = toJSON(list(type = unbox(type), content = content))
+  function_response = toJSON(list(type = unbox(type), result = result))
   return(write(function_response, stdout()))
 }
 
