@@ -1,6 +1,6 @@
 library(jsonlite)
 
-check_params = dget('function/params_tests.R')
+check_params = dget('function/preprocess_params.R')
 run_function = dget('function/function.R')
 
 main = function () {
