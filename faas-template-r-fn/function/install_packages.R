@@ -1,1 +1,2 @@
-install.packages(c('jsonlite'))
+install.packages(c('jsonlite',
+                   'geojsonio'))
